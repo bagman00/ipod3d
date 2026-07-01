@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import MobileWarning from "@/components/MobileWarning";
 import { Providers } from "@/components/Providers";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "an iPod",
@@ -15,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <Providers>
-      <html lang="en">
+      <html lang="en" className={cn("font-sans", geist.variable)}>
         <body className="antialiased">
           {children}
           <MobileWarning />

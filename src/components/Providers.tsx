@@ -1,10 +1,13 @@
 "use client";
+import { ClerkProvider } from "@clerk/nextjs";
 import { PlayerProvider } from "@/context/PlayerContext";
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
-        <PlayerProvider>
-            {children}
-        </PlayerProvider>
+        <ClerkProvider>
+            <PlayerProvider>
+                {children}
+            </PlayerProvider>
+        </ClerkProvider>
     );
 }
