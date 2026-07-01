@@ -403,7 +403,11 @@ export default function Ipod3D() {
     const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newVolume = parseInt(e.target.value);
         setVolume(newVolume);
-        if (playerRef.current) playerRef.current.setVolume(newVolume);
+        if (playerRef.current) {
+            playerRef.current.setVolume(newVolume);
+            if (newVolume > 0 && isMuted) { playerRef.current.unMute(); setIsMuted(false); }
+            if (newVolume === 0) { playerRef.current.mute(); setIsMuted(true); }
+        }
     };
 
     const toggleMute = () => {
@@ -465,7 +469,7 @@ export default function Ipod3D() {
                             <div className="pr-2">
                                 <button
                                     onClick={handleConfirm}
-                                    disabled={!videoUrl.trim()}
+                                    disabled={!videoUrl.trim() ? true : false}
                                     className={`w-8 h-8 rounded-xl bg-gradient-to-b from-stone-700 to-stone-900 flex items-center justify-center transition-all hover:scale-105 active:scale-95 ${videoUrl.trim() ? "opacity-100" : "opacity-40"}`}
                                 >
                                     {isSearching
@@ -512,9 +516,14 @@ export default function Ipod3D() {
             {hasStarted && (
                 <div className={`fixed z-50 flex flex-col gap-4 transition-all duration-300 ${isMobile ? "bottom-20 right-5 w-64" : "top-8 left-8 w-64"}`}>
                     <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/20">
-                        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-4">Player</span>
-                        <div className="flex items-center justify-between gap-2">
-                            <button onClick={playPrev} disabled={currentIndex <= 0} className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-30">
+                        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2">Player</span>
+                        {currentVideoId && queue[currentIndex] && (
+                            <div className="mb-3 pb-3 border-b border-gray-100">
+                                <p className="text-xs font-semibold text-gray-800 truncate">{queue[currentIndex].title}</p>
+                                <p className="text-[10px] text-gray-500 truncate">{queue[currentIndex].channel || "YouTube"}</p>
+                            </div>
+                        )}                        <div className="flex items-center justify-between gap-2">
+                            <button onClick={playPrev} disabled={currentIndex <= 0 ? true : false} className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-30">
                                 <SkipBack size={20} fill="currentColor" />
                             </button>
                             <button onClick={() => handleSeek(-5)} className="p-2 rounded-full hover:bg-gray-100">
@@ -529,7 +538,7 @@ export default function Ipod3D() {
                             <button onClick={() => handleSeek(5)} className="p-2 rounded-full hover:bg-gray-100">
                                 <FastForward size={20} fill="currentColor" />
                             </button>
-                            <button onClick={playNext} disabled={currentIndex >= queue.length - 1} className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-30">
+                            <button onClick={playNext} disabled={currentIndex >= queue.length - 1 ? true : false} className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-30">
                                 <SkipForward size={20} fill="currentColor" />
                             </button>
                         </div>
@@ -580,7 +589,7 @@ export default function Ipod3D() {
                                 <div className="pr-2">
                                     <button
                                         onClick={handleConfirm}
-                                        disabled={!videoUrl.trim()}
+                                        disabled={!videoUrl.trim() ? true : false}
                                         className={`w-10 h-10 rounded-xl bg-gradient-to-b from-stone-700 to-stone-900 flex items-center justify-center transition-all hover:scale-105 active:scale-95 ${videoUrl.trim() ? "opacity-100" : "opacity-40"}`}
                                     >
                                         {isSearching
